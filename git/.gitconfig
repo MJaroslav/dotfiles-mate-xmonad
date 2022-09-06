@@ -1,0 +1,8 @@
+[user]
+	email = rcr3211@gmail.com
+	name = Yaroslav Novitsky
+[core]
+	editor = nvim
+	autocrlf = input
+[credential]
+	helper = store --file ~/.git-credentials

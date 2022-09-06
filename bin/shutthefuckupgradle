@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "Shut the fuck upping all gradle daemons..."
+pkill -9 -f ".*GradleDaemon.*"
+echo "Done!"
+

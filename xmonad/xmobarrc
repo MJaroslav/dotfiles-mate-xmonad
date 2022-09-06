@@ -1,0 +1,49 @@
+Config { font = "xft:UbuntuMono Nerd Font:size=12"
+       , additionalFonts = []
+       , borderColor = "black"
+       , border = TopB
+       , bgColor = "black"
+       , fgColor = "white"
+       , alpha = 200
+       , position = Top
+       , textOffset = -1
+       , iconOffset = -1
+       , lowerOnStart = True
+       , pickBroadest = False
+       , persistent = False
+       , hideOnStart = False
+       , iconRoot = "."
+       , allDesktops = True
+       , overrideRedirect = True
+       , commands = [ Run Weather "ULLI" ["-t","<fc=#EF2929></fc> <station>: <tempC>°C",
+                                          "-L","15","-H","25",
+                                          "--normal","green",
+                                          "--high","red",
+                                          "--low","lightblue"] 36000
+                    , Run DynNetwork ["-t", "龍  <tx> KB/s <rx> KB/s",
+									  "-L", "1000", "-H", "5000",
+									  "--low", "red", "--high", "green"] 10
+					, Run Cpu ["-t", "  <total>%", "-L","20","-H","85",
+                               "--low","green","--high","red"] 10
+                    , Run Memory ["-t", "<usedratio>%",
+								  "-L", "30", "-H", "85",
+								  "--low", "green", "--high", "red"] 10
+                    , Run Swap ["-t", "<usedratio>%",
+								"-L", "10", "-H", "30",
+								"--low", "green", "--high", "red"] 10
+                    , Run Date " %a %b %_d %Y %H:%M:%S" "date" 10
+                    , Run Kbd [("ru", "RU"), ("us", "US")]
+					, Run Battery ["--template", "<fc=#FFE266></fc> <left>%",
+								   "-L", "20", "-H", "80",
+								   "--low", "red",
+								   "--high", "green"] 50
+					, Run Com "whoami" [] "" 36000
+					, Run Com "wireless" [] "" 10
+					, Run Com "volumepercent" [] "" 10
+					]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "  %whoami% | %cpu% |  %memory% %swap% | %wireless% %dynnetwork% }\
+                    \{ <fc=#ee9a00>%date%</fc> | %ULLI% | %volumepercent% | %battery% | \
+					\<fc=#729FCF></fc>  %kbd% "
+       }
