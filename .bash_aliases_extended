@@ -1,0 +1,6 @@
+alias jdks='sdk list java | grep -E "(installed)|(local only)"'
+alias jdk8fx='sdk use java 8.0.345.fx-zulu'
+alias jdk8='sdk use java 8.0.345-zulu'
+alias jdk16fx='sdk use java 16.0.2.fx-zulu'
+alias jdk17='sdk use java 17.0.4-zulu'
+alias jdk17fx='sdk use java 17.0.4.fx-zulu'
