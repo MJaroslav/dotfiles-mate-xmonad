@@ -1,4 +1,6 @@
-# dotfiles for my linux mint MATE/xmonad configuration
+# dotfiles-mate-xmonad
+
+dotfiles for my linux mint MATE/xmonad configuration.
 
 **Warning: This dotfiles can contain files that specific only for my system.**
 
