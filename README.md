@@ -11,7 +11,7 @@ dotfiles for my linux mint MATE/xmonad configuration.
 
 ## Installation
 
-All subfolders contain INSTALL.sh script.
+Just clone this repo to home with .dotfiles directory name and run `INSTALL.sh` for all required apps.
 
 For alias, add this to end of `~/.bash_alias`:
 
