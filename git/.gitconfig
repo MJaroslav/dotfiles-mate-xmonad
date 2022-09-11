@@ -1,6 +1,7 @@
 [user]
 	email = rcr3211@gmail.com
 	name = Yaroslav Novitsky
+	signingkey = 06EB95B17ABD53FC
 [core]
 	editor = nvim
 	autocrlf = input
@@ -8,3 +9,5 @@
 	helper = store --file ~/.git-credentials
 [init]
 	defaultBranch = master
+[commit]
+	gpgsign = true
