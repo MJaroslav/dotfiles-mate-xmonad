@@ -11,3 +11,5 @@
 	defaultBranch = master
 [commit]
 	gpgsign = true
+[advice]
+	addIgnoredFile = false
