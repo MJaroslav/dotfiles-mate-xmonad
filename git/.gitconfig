@@ -13,3 +13,5 @@
 	gpgsign = true
 [advice]
 	addIgnoredFile = false
+[hub]
+	protocol = https
