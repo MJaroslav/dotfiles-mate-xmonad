@@ -16,6 +16,8 @@ Plug 'tc50cal/vim-terminal'
 Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn --install'}
 Plug 'andweeb/presence.nvim'
 Plug 'lambdalisue/suda.vim'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'airblade/vim-gitgutter'
 
 call plug#end()
 
