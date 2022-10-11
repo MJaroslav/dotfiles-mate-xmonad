@@ -274,7 +274,7 @@ myLogHook = return ()
 myStartupHook = do
 	spawnOnce "nitrogen --restore &"
 	spawnOnce "compton &"
-	spawnOnce "setxkbmap -model pc105 -layout us,ru -option -option grp:caps_toggle &"
+	spawnOnce "setxkbmap -model pc105 -layout us,ru -option -option grp:caps_toggle -option compose:ralt"
 	spawnOnce "xautolock -time 15 -locker \"mate-screensaver-command -l\" -detectsleep &"
 	spawnOnce "mate-screensaver &"
 	setWMName "LG3D" -- Used for Java Swing Apps
