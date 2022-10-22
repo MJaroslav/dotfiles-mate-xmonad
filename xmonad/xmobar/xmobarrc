@@ -38,8 +38,8 @@ Config { font = "xft:UbuntuMono Nerd Font:size=12"
 								   "--low", "red",
 								   "--high", "green"] 50
 					, Run Com "whoami" [] "" 36000
-					, Run Com ".dotfiles/xmonad/xmobar/volume-status" [] "volume" 10
-					, Run Com ".dotfiles/xmonad/xmobar/network-status" [] "network" 10
+					, Run Com ".xmonad/xmobar/volume-status" [] "volume" 10
+					, Run Com ".xmonad/xmobar/network-status" [] "network" 10
 					]
        , sepChar = "%"
        , alignSep = "}{"

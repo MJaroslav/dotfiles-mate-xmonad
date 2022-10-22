@@ -18,7 +18,7 @@ import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Hooks.EwmhDesktops
 import XMonad.ManageHook
 import XMonad.Hooks.SetWMName
--- import XMonad.Layout.NoBorders
+import XMonad.Layout.NoBorders
 import XMonad.Hooks.ManageHelpers
 
 import qualified XMonad.StackSet as W
@@ -155,6 +155,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
 	-- Open IDEA
 	, ((modm, xK_i), spawn "idea")
+
+    -- Toggle xmobar
+    , ((modm .|. shiftMask, xK_m), spawn "~/.xmonad/xmobar/xmobarrunner")
+
     ]
     ++
 
@@ -206,7 +210,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = avoidStruts (tiled {-||| Mirror tiled-} ||| Full)
+myLayout = avoidStruts (tiled {-||| Mirror tiled-} ||| smartBorders Full)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -272,20 +276,21 @@ myLogHook = return ()
 --
 -- By default, do nothing.
 myStartupHook = do
-	spawnOnce "nitrogen --restore &"
-	spawnOnce "compton &"
-	spawnOnce "setxkbmap -model pc105 -layout us,ru -option -option grp:caps_toggle -option compose:ralt"
-	spawnOnce "xautolock -time 15 -locker \"mate-screensaver-command -l\" -detectsleep &"
-	spawnOnce "mate-screensaver &"
-	setWMName "LG3D" -- Used for Java Swing Apps
+    spawnOnce "nitrogen --restore &"
+    spawnOnce "compton &"
+    spawnOnce "setxkbmap -model pc105 -layout us,ru -option -option grp:caps_toggle -option compose:ralt"
+    spawnOnce "xautolock -time 15 -locker \"mate-screensaver-command -l\" -detectsleep &"
+    spawnOnce "mate-screensaver &"
+    setWMName "LG3D" -- Used for Java Swing Apps
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 
 -- Run xmonad with the settings you specify. No need to modify this.
 --
 main = do
-	xmproc <- spawnPipe "xmobar -x 0 ${HOME}/.xmonad/xmobar/xmobarrc"
-	xmonad $ docks defaults
+    {-xmproc <- spawnPipe "xmobar -x 0 ${HOME}/.xmonad/xmobar/xmobarrc"-}
+    xmproc <- spawnPipe "~/.xmonad/xmobar/xmobarrunner --on"
+    xmonad $ docks defaults
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will
@@ -314,15 +319,15 @@ defaults = ewmh def {
         handleEventHook    = myEventHook,
         logHook            = myLogHook,
         startupHook        = myStartupHook
-	} `additionalKeys` [
-		((0, 0x1008FF11), spawn "amixer -q -D pulse set Master 5%- unmute") -- minus 5% to volume and unmute
-		, ((0, 0x1008FF13), spawn "amixer -q -D pulse set Master 5%+ unmute") -- plus 5% to volume and unmute
-		, ((0, 0x1008FF12), spawn "amixer -q -D pulse set Master toggle") -- toggle mute
-		, ((0, 0xff61), spawn "flameshot screen -c") -- make screenshot and copy to clipboard
-		, ((0 .|. shiftMask, 0xff61), spawn "flameshot gui") -- make screenshot by GUI
-		, ((0, 0x1008FF02), spawn "brightnessctl -d \"radeon_bl0\" set 5%+") -- plus 5% to brightness
-		, ((0, 0x1008FF03), spawn "brightnessctl -d \"radeon_bl0\" set 5%-") -- minus 5% from brightness
-	]
+    } `additionalKeys` [
+        ((0, 0x1008FF11), spawn "amixer -q -D pulse set Master 5%- unmute") -- minus 5% to volume and unmute
+        , ((0, 0x1008FF13), spawn "amixer -q -D pulse set Master 5%+ unmute") -- plus 5% to volume and unmute
+        , ((0, 0x1008FF12), spawn "amixer -q -D pulse set Master toggle") -- toggle mute
+        , ((0, 0xff61), spawn "flameshot screen -c") -- make screenshot and copy to clipboard
+        , ((0 .|. shiftMask, 0xff61), spawn "flameshot gui") -- make screenshot by GUI
+        , ((0, 0x1008FF02), spawn "brightnessctl -d \"radeon_bl0\" set 5%+") -- plus 5% to brightness
+        , ((0, 0x1008FF03), spawn "brightnessctl -d \"radeon_bl0\" set 5%-") -- minus 5% from brightness        	
+    ]
 
 -- | Finally, a copy of the default bindings in simple textual tabular format.
 help :: String

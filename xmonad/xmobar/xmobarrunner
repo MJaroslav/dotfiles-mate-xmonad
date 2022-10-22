@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+    if [ "`pgrep -x "xmobar"`" ]; then
+        killall xmobar
+    else
+        /bin/bash -c "cd ~; xmobar -x 0 $HOME/.xmonad/xmobar/xmobarrc &"
+    fi
+else
+    killall xmobar
+    if [ "$1" = "--on" ]; then
+        /bin/bash -c "cd ~; xmobar -x 0 $HOME/.xmonad/xmobar/xmobarrc &"
+    fi
+fi
