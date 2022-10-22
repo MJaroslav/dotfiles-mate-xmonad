@@ -20,6 +20,9 @@ import XMonad.ManageHook
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.NoBorders
 import XMonad.Hooks.ManageHelpers
+import XMonad.Layout.Reflect
+
+import XMonad.Hooks.DynamicLog
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
@@ -62,7 +65,7 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 -- Border colors for unfocused and focused windows, respectively.
 --
 myNormalBorderColor  = "#000000"
-myFocusedBorderColor = "#FFFFFF"
+myFocusedBorderColor = "#e6744c"
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -155,10 +158,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
 	-- Open IDEA
 	, ((modm, xK_i), spawn "idea")
-
-    -- Toggle xmobar
-    , ((modm .|. shiftMask, xK_m), spawn "~/.xmonad/xmobar/xmobarrunner")
-
     ]
     ++
 
@@ -210,7 +209,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = avoidStruts (tiled {-||| Mirror tiled-} ||| smartBorders Full)
+myLayout = avoidStruts (reflectHoriz $ smartBorders tiled {-||| Mirror tiled-} ||| smartBorders Full)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -276,21 +275,59 @@ myLogHook = return ()
 --
 -- By default, do nothing.
 myStartupHook = do
+    spawnOnce "trayer --transparent true --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --height 21 --alpha 56 --tint 0 --iconspacing 4 &"
     spawnOnce "nitrogen --restore &"
-    spawnOnce "compton &"
+    spawnOnce "compton -f &"
     spawnOnce "setxkbmap -model pc105 -layout us,ru -option -option grp:caps_toggle -option compose:ralt"
     spawnOnce "xautolock -time 15 -locker \"mate-screensaver-command -l\" -detectsleep &"
     spawnOnce "mate-screensaver &"
     setWMName "LG3D" -- Used for Java Swing Apps
+
+---------
+-- xmobar settings
+--
+
+
+myTitleColor     = "#eeeeee"  -- color of window title
+myTitleLength    = 63         -- truncate window title to this length
+myCurrentWSColor = "#e6744c"  -- color of active workspace
+myVisibleWSColor = "#c185a7"  -- color of inactive workspace
+myUrgentWSColor  = "#cc0000"  -- color of workspace with 'urgent' window
+myCurrentWSLeft  = "["        -- wrap active workspace with these
+myCurrentWSRight = "]"
+myVisibleWSLeft  = "("        -- wrap inactive workspace with these
+myVisibleWSRight = ")"
+myUrgentWSLeft  = "{"         -- wrap urgent workspace with these
+myUrgentWSRight = "}"
+
+
+-- Custom PP, configure it as you like. It determines what is being written to the bar.
+myPP = xmobarPP {
+    -- ppCurrent = xmobarColor "#429942" "" . wrap "<" ">"
+    ppTitle = xmobarColor myTitleColor "" . shorten myTitleLength
+    , ppCurrent = xmobarColor myCurrentWSColor ""
+        . wrap myCurrentWSLeft myCurrentWSRight
+    , ppVisible = xmobarColor myVisibleWSColor ""
+        . wrap myVisibleWSLeft myVisibleWSRight
+    , ppUrgent = xmobarColor myUrgentWSColor ""
+        . wrap myUrgentWSLeft myUrgentWSRight
+    , ppOrder = \(ws:_:t:_) -> [ws,t]
+    , ppHidden = \(wid) -> []
+}
+
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 
 -- Run xmonad with the settings you specify. No need to modify this.
 --
-main = do
+main :: IO ()
+main = -- do
     {-xmproc <- spawnPipe "xmobar -x 0 ${HOME}/.xmonad/xmobar/xmobarrc"-}
-    xmproc <- spawnPipe "~/.xmonad/xmobar/xmobarrunner --on"
-    xmonad $ docks defaults
+    -- xmproc <- spawnPipe "~/.xmonad/xmobar/xmobarrunner --on"
+    xmonad . ewmh  =<< statusBar "xmobar ~/.xmonad/xmobar/xmobarrc" myPP toggleStrutsKey defaults
+    where
+        toggleStrutsKey :: XConfig Layout -> (KeyMask, KeySym)
+        toggleStrutsKey XConfig{ modMask = m } = (m .|. shiftMask, xK_b)
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will
@@ -298,7 +335,7 @@ main = do
 --
 -- No need to modify this.
 --
-defaults = ewmh def {
+defaults = def {
       -- simple stuff
         terminal           = myTerminal,
         focusFollowsMouse  = myFocusFollowsMouse,
