@@ -7,5 +7,5 @@ else
 
 fi
 percent=`amixer -D pulse get Master | grep % |awk '{print $5}'|sed -e 's/\[//' -e 's/\]//' | head -n 1`
-echo "$icon  $percent"
+echo "$icon $percent"
 

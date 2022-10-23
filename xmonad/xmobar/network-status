@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ `ip route | head -n 1` =~ "enp3s0" ]]; then
-  echo "  Ethernet"
+  echo " Ethernet"
   exit 0
 fi
 

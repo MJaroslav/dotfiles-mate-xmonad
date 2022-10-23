@@ -1,7 +1,7 @@
-Config { font = "xft:UbuntuMono Nerd Font:size=12"
+Config { font = "xft:JetBrainsMono Nerd Font:size=9"
        , additionalFonts = []
        , borderColor = "black"
-       , border = TopB
+       , border = NoBorder
        , bgColor = "black"
        , fgColor = "white"
        , alpha = 200
@@ -12,9 +12,9 @@ Config { font = "xft:UbuntuMono Nerd Font:size=12"
        , pickBroadest = False
        , persistent = False
        , hideOnStart = False
-       , iconRoot = "."
+       , iconRoot = ".xmonad/xmobar/icons"
        , allDesktops = True
-       , overrideRedirect = True
+       , overrideRedirect = False
        , commands = [ Run Weather "ULLI" ["-t","<fc=#EF2929></fc> <tempC>°C",
                                           "-L","15","-H","25",
                                           "--normal","green",
@@ -31,19 +31,22 @@ Config { font = "xft:UbuntuMono Nerd Font:size=12"
                     , Run Swap ["-t", "<usedratio>%",
 								"-L", "10", "-H", "30",
 								"--low", "green", "--high", "red"] 10
-                    , Run Date "  %a %Y-%m-%d %H:%M" "date" 10
-                    , Run Kbd [("ru", "RU"), ("us", "US")]
-					, Run Battery ["--template", "<fc=#FFE266></fc> <left>%",
-								   "-L", "20", "-H", "80",
-								   "--low", "red",
-								   "--high", "green"] 50
+                    , Run Date "%a %Y/%m/%d %H:%M" "date" 10
+                    , Run Kbd [("ru", "<icon=ru.xpm/>"), ("us", "<icon=us.xpm/>")]
+					, Run Battery ["-t", "<acstatus> <left>", "--",
+                                    "-o", " ﮣ",
+                                    "-O", " ⚡",
+                                    "-i", " ⚡",
+                                    "-P",
+                                    "--lows", " ",
+                                    "--mediums", " ",
+                                    "--highs", " "
+                                    ] 50
 					, Run Com ".xmonad/xmobar/volume-status" [] "volume" 10
 					, Run Com ".xmonad/xmobar/network-status" [] "network" 10
                     , Run StdinReader
 					]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "  %StdinReader% }{ %cpu% |  %memory% %swap% | \
-                    \<fc=#ee9a00>%date%</fc> | %ULLI% | %volume% | %battery% | \
-					\<fc=#729FCF></fc>  %kbd% "
+       , template = "  %StdinReader% }{ %cpu% |  %memory% %swap% | %network% %dynnetwork% | %date% | %ULLI% | %volume% %battery% %kbd% "
        }
