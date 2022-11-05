@@ -27,6 +27,21 @@ import XMonad.Hooks.DynamicLog
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
+import Data.List
+import Data.Char
+
+include :: String -> String -> Bool
+include xs ys = or . map (isPrefixOf ys) . tails $ xs
+
+data Cond a = a :? a
+
+infixl 0 ?
+infixl 1 :?
+
+(?) :: Bool -> Cond a -> a
+True  ? (x :? _) = x
+False ? (_ :? y) = y
+
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
@@ -289,7 +304,7 @@ myStartupHook = do
 
 
 myTitleColor     = "#eeeeee"  -- color of window title
-myTitleLength    = 63         -- truncate window title to this length
+myTitleLength    = 60         -- truncate window title to this length
 myCurrentWSColor = "#e6744c"  -- color of active workspace
 myVisibleWSColor = "#c185a7"  -- color of inactive workspace
 myUrgentWSColor  = "#cc0000"  -- color of workspace with 'urgent' window
@@ -299,7 +314,8 @@ myVisibleWSLeft  = "("        -- wrap inactive workspace with these
 myVisibleWSRight = ")"
 myUrgentWSLeft  = "{"         -- wrap urgent workspace with these
 myUrgentWSRight = "}"
-
+myFullIcon = "\60340"
+myTallIcon = "\60341"
 
 -- Custom PP, configure it as you like. It determines what is being written to the bar.
 myPP = xmobarPP {
@@ -311,7 +327,8 @@ myPP = xmobarPP {
         . wrap myVisibleWSLeft myVisibleWSRight
     , ppUrgent = xmobarColor myUrgentWSColor ""
         . wrap myUrgentWSLeft myUrgentWSRight
-    , ppOrder = \(ws:_:t:_) -> [ws,t]
+    , ppLayout = \(l) -> (l `include` "Full" ? myFullIcon :? myTallIcon)
+    , ppOrder = \(ws:l:t:_) -> [ws,l,t]
     , ppHidden = \(wid) -> []
 }
 
