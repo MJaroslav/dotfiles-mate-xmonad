@@ -8,13 +8,14 @@
 :set mouse=a
 :set expandtab
  
+:set updatetime=300
+
 call plug#begin()
 
 Plug 'vim-airline/vim-airline'
-Plug 'preservim/nerdtree'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'ryanoasis/vim-devicons'
-Plug 'tc50cal/vim-terminal'
-Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn --install'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'andweeb/presence.nvim'
 Plug 'lambdalisue/suda.vim'
 Plug 'editorconfig/editorconfig-vim'
@@ -22,8 +23,25 @@ Plug 'airblade/vim-gitgutter'
 
 call plug#end()
 
-
-nnoremap <C-n> :NERDTree<CR>
-nnoremap <C-t> :NERDTreeToggle<CR>
-
 :set completeopt-=preview
+:let g:suda_smart_edit = 1
+
+" Why I not found this in airline README???
+
+let g:airline#extensions#tabline#enabled = 1
+
+" air-line
+let g:airline_powerline_fonts = 1
+
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+" airline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
