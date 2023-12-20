@@ -10,6 +10,7 @@
 import XMonad
 import Data.Monoid
 import System.Exit
+import System.IO
 import XMonad.Util.SpawnOnce
 import XMonad.Actions.SpawnOn
 import XMonad.Util.Run
@@ -21,6 +22,7 @@ import XMonad.Hooks.SetWMName
 import XMonad.Layout.NoBorders
 import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.Reflect
+import XMonad.Layout.Spacing
 
 import XMonad.Hooks.DynamicLog
 
@@ -75,7 +77,8 @@ myModMask       = mod4Mask
 --
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+myWorkspaces    :: [String]
+myWorkspaces    = map show [1..9]
 
 -- Border colors for unfocused and focused windows, respectively.
 --
@@ -173,6 +176,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
 	-- Open IDEA
 	, ((modm, xK_i), spawn "idea")
+
+    -- Toggle FullScreen
+    , ((modm .|. shiftMask, xK_b), sequence_ [sendMessage ToggleStruts, toggleScreenSpacingEnabled, toggleWindowSpacingEnabled])
     ]
     ++
 
@@ -274,14 +280,6 @@ myManageHook = composeAll
 myEventHook = handleEventHook def <+> fullscreenEventHook
 
 ------------------------------------------------------------------------
--- Status bars and logging
-
--- Perform an arbitrary action on each internal state change or X event.
--- See the 'XMonad.Hooks.DynamicLog' extension for examples.
---
-myLogHook = return ()
-
-------------------------------------------------------------------------
 -- Startup hook
 
 -- Perform an arbitrary action each time xmonad starts or is restarted
@@ -290,12 +288,14 @@ myLogHook = return ()
 --
 -- By default, do nothing.
 myStartupHook = do
-    spawnOnce "trayer --transparent true --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --height 21 --alpha 56 --tint 0 --iconspacing 4 &"
+    spawn "~/.dotfiles/xmonad/scripts/trayer.sh &"
     spawnOnce "nitrogen --restore &"
+    spawnOnce "flameshot &"
     spawnOnce "compton -f &"
     spawnOnce "setxkbmap -model pc105 -layout us,ru -option -option grp:caps_toggle -option compose:ralt"
     spawnOnce "xautolock -time 15 -locker \"mate-screensaver-command -l\" -detectsleep &"
     spawnOnce "mate-screensaver &"
+    spawnOnce "play-with-mpv &"
     setWMName "LG3D" -- Used for Java Swing Apps
 
 ---------
@@ -322,14 +322,15 @@ myPP = xmobarPP {
     -- ppCurrent = xmobarColor "#429942" "" . wrap "<" ">"
     ppTitle = xmobarColor myTitleColor "" . shorten myTitleLength
     , ppCurrent = xmobarColor myCurrentWSColor ""
-        . wrap myCurrentWSLeft myCurrentWSRight
+       . wrap myCurrentWSLeft myCurrentWSRight
     , ppVisible = xmobarColor myVisibleWSColor ""
-        . wrap myVisibleWSLeft myVisibleWSRight
+       . wrap myVisibleWSLeft myVisibleWSRight
     , ppUrgent = xmobarColor myUrgentWSColor ""
-        . wrap myUrgentWSLeft myUrgentWSRight
+       . wrap myUrgentWSLeft myUrgentWSRight
     , ppLayout = \(l) -> (l `include` "Full" ? myFullIcon :? myTallIcon)
     , ppOrder = \(ws:l:t:_) -> [ws,l,t]
     , ppHidden = \(wid) -> []
+    , ppHiddenNoWindows = \(wid) -> []
 }
 
 ------------------------------------------------------------------------
@@ -338,13 +339,13 @@ myPP = xmobarPP {
 -- Run xmonad with the settings you specify. No need to modify this.
 --
 main :: IO ()
-main = -- do
-    {-xmproc <- spawnPipe "xmobar -x 0 ${HOME}/.xmonad/xmobar/xmobarrc"-}
-    -- xmproc <- spawnPipe "~/.xmonad/xmobar/xmobarrunner --on"
-    xmonad . ewmh  =<< statusBar "xmobar ~/.xmonad/xmobar/xmobarrc" myPP toggleStrutsKey defaults
-    where
-        toggleStrutsKey :: XConfig Layout -> (KeyMask, KeySym)
-        toggleStrutsKey XConfig{ modMask = m } = (m .|. shiftMask, xK_b)
+main = do
+    xmproc <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobarrc"
+    xmonad $ docks $ ewmh defaults {
+        logHook = dynamicLogWithPP $ myPP {
+            ppOutput = System.IO.hPutStrLn xmproc
+        }
+    }
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will
@@ -371,7 +372,7 @@ defaults = def {
         layoutHook         = myLayout,
         manageHook         = myManageHook,
         handleEventHook    = myEventHook,
-        logHook            = myLogHook,
+        logHook            = {--myLogHook $--} dynamicLogWithPP $ myPP,
         startupHook        = myStartupHook
     } `additionalKeys` [
         ((0, 0x1008FF11), spawn "amixer -q -D pulse set Master 5%- unmute") -- minus 5% to volume and unmute

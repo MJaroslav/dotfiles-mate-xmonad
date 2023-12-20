@@ -9,12 +9,7 @@ Config { font = "xft:JetBrainsMono Nerd Font:size=9"
        , textOffset = -1
        , iconOffset = -1
        , lowerOnStart = True
-       , pickBroadest = False
-       , persistent = False
-       , hideOnStart = False
-       , iconRoot = ".xmonad/xmobar/icons"
-       , allDesktops = True
-       , overrideRedirect = False
+       , iconRoot = ".xmonad/icons"
        , commands = [ Run Weather "ULLI" ["-t","<fc=#EF2929></fc> <tempC>°C",
                                           "-L","15","-H","25",
                                           "--normal","green",
@@ -42,8 +37,8 @@ Config { font = "xft:JetBrainsMono Nerd Font:size=9"
                                     "--mediums", " ",
                                     "--highs", " "
                                     ] 50
-					, Run Com ".xmonad/xmobar/volume-status" [] "volume" 10
-					, Run Com ".xmonad/xmobar/network-status" [] "network" 10
+					, Run Com ".xmonad/scripts/volume-status.sh" [] "volume" 10
+					, Run Com ".xmonad/scripts/network-status.sh" [] "network" 10
                     , Run StdinReader
 					]
        , sepChar = "%"
