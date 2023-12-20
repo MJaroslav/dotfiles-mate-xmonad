@@ -289,13 +289,7 @@ myEventHook = handleEventHook def <+> fullscreenEventHook
 -- By default, do nothing.
 myStartupHook = do
     spawn "~/.dotfiles/xmonad/scripts/trayer.sh &"
-    spawnOnce "nitrogen --restore &"
-    spawnOnce "flameshot &"
-    spawnOnce "compton -f &"
-    spawnOnce "setxkbmap -model pc105 -layout us,ru -option -option grp:caps_toggle -option compose:ralt"
-    spawnOnce "xautolock -time 15 -locker \"mate-screensaver-command -l\" -detectsleep &"
-    spawnOnce "mate-screensaver &"
-    spawnOnce "play-with-mpv &"
+    spawn "~/.dotfiles/xmonad/scripts/restartable.sh &"
     setWMName "LG3D" -- Used for Java Swing Apps
 
 ---------
