@@ -23,6 +23,7 @@ import XMonad.Layout.NoBorders
 import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.Reflect
 import XMonad.Layout.Spacing
+import XMonad.Actions.WindowGo
 
 import XMonad.Hooks.DynamicLog
 
@@ -94,7 +95,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- launch dmenu
-    , ((modm,               xK_p     ), spawnHere "dmenu_run")
+    , ((modm,               xK_p     ), spawnHere "dmenu_run -nb \\#070C19 -sb \\#233875")
 
     -- launch gmrun
     , ((modm .|. shiftMask, xK_p     ), spawnHere "gmrun")
@@ -139,7 +140,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_l     ), sendMessage Expand)
 
     -- Push window back into tiling
-    , ((modm,               xK_t     ), withFocused $ windows . W.sink)
+    , ((modm .|. shiftMask, xK_t     ), withFocused $ windows . W.sink)
 
     -- Increment the number of windows in the master area
     , ((modm              , xK_comma ), sendMessage (IncMasterN 1))
@@ -169,10 +170,16 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 	, ((modm, xK_f), spawn "caja")
 
 	-- Open default browser
-	, ((modm, xK_b), spawn "x-www-browser")
+	, ((modm, xK_b), runOrRaise "x-www-browser" (stringProperty "WM_WINDOW_ROLE" =? "browser"))
 
 	-- Open discord
-	, ((modm, xK_d), spawn "discord")
+	, ((modm, xK_d), runOrRaise "discord" (resource =? "discord"))
+
+    -- Open VK messenger
+    , ((modm, xK_v), runOrRaise "vk-messenger" (className =? "VK Messenger"))
+
+    -- Open Telegram
+    , ((modm, xK_t), runOrRaise "telegram-desktop" (className =? "TelegramDesktop"))
 
 	-- Open IDEA
 	, ((modm, xK_i), spawn "idea")
@@ -260,12 +267,16 @@ myLayout = avoidStruts (reflectHoriz $ smartBorders tiled {-||| Mirror tiled-} |
 -- 'className' and 'resource' are used below.
 --
 myManageHook = composeAll
-    [ className =? "MPlayer"        --> doFloat
-    , className =? "Gimp"           --> doFloat
-    , resource  =? "desktop_window" --> doIgnore
-    , resource  =? "kdesktop"       --> doIgnore
-	, title =? "Список друзей" >> className =? "Steam" --> doFloat
-	-- , isFullscreen --> doFullFloat
+    [ className                         =? "MPlayer"                                --> doFloat
+    , className                         =? "Gimp"                                   --> doFloat
+    , resource                          =? "desktop_window"                         --> doIgnore
+    , resource                          =? "kdesktop"                               --> doIgnore
+	, title                             =? "Список друзей" >> className =? "Steam"  --> doFloat
+    , className                         =? "discord"                                --> doShift "2"
+    , className                         =? "VK Messenger"                           --> doShift "2"
+    , stringProperty "WM_WINDOW_ROLE"   =? "browser"                                --> doShift "1"
+    , className                         =? "TelegramDesktop"                        --> doShift "2"
+	-- , isFullscreen                                                                  --> doFullFloat
 	]
 
 ------------------------------------------------------------------------
@@ -391,8 +402,10 @@ help = unlines ["The modifier key is 'super'. Keybindings:",
     "mod-Shift-Space  Reset the layouts on the current workSpace to default",
     "mod-n            Resize/refresh viewed windows to the correct size",
 	"mod-f            Launch Caja file manager",
-	"mod-b            Launch default browser",
-	"mod-d            Launch Discord",
+	"mod-b            Launch or focus default browser",
+    "mod-v            Launch or focus VK Messenger",
+	"mod-d            Launch or focus Discord",
+    "mod-t            Launch or focus Telegram",
 	"mod-i            Launch IDEA",
     "",
     "-- move focus up or down the window stack",
@@ -412,7 +425,7 @@ help = unlines ["The modifier key is 'super'. Keybindings:",
     "mod-l  Expand the master area",
     "",
     "-- floating layer support",
-    "mod-t  Push window back into tiling; unfloat and re-tile it",
+    "mod-Shift-t  Push window back into tiling; unfloat and re-tile it",
     "",
     "-- increase or decrease number of windows in the master area",
     "mod-comma  (mod-,)   Increment the number of windows in the master area",
