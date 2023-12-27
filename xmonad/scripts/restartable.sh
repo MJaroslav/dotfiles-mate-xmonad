@@ -1,4 +1,6 @@
 #!/bin/bash
+killall polkit-mate-aut
+mate-polkit &
 killall nitrogen
 nitrogen --restore &
 killall flameshot
@@ -11,3 +13,5 @@ killall mate-screensaver
 mate-screensaver &
 killall play-with-mpv
 play-with-mpv &
+killall nekoray
+nekoray
