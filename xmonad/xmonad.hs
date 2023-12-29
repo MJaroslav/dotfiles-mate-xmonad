@@ -24,6 +24,9 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.Reflect
 import XMonad.Layout.Spacing
 import XMonad.Actions.WindowGo
+import XMonad.Prompt.ConfirmPrompt
+
+import Graphics.X11.ExtraTypes.XF86
 
 import XMonad.Hooks.DynamicLog
 
@@ -155,10 +158,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- , ((modm              , xK_b     ), sendMessage ToggleStruts)
 
     -- Quit xmonad
-    , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
+    , ((modm .|. shiftMask, xK_q     ), confirmPrompt def "exit" $ io (exitWith ExitSuccess))
 
     -- Restart xmonad
-    , ((modm              , xK_q     ), spawn "killall xmobar && xmonad --recompile; xmonad --restart")
+    , ((modm              , xK_q     ), confirmPrompt def "restart" $ spawn "killall xmobar && xmonad --recompile; xmonad --restart")
 
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
     , ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | xmessage -file -"))
@@ -303,7 +306,7 @@ myStartupHook = do
     spawn "~/.dotfiles/xmonad/scripts/restartable.sh &"
     spawnOnce "setxkbmap -model pc105 -layout us,ru -option -option grp:caps_toggle -option compose:ralt"
     spawnOnce "xautolock -time 15 -locker \"mate-screensaver-command -l\" -detectsleep &"
-    setWMName "LG3D" -- Used for Java Swing Apps
+    -- setWMName "LG3D" -- Used for Java Swing Apps
 
 ---------
 -- xmobar settings
@@ -382,13 +385,13 @@ defaults = def {
         logHook            = {--myLogHook $--} dynamicLogWithPP $ myPP,
         startupHook        = myStartupHook
     } `additionalKeys` [
-        ((0, 0x1008FF11), spawn "amixer -q -D pulse set Master 5%- unmute") -- minus 5% to volume and unmute
-        , ((0, 0x1008FF13), spawn "amixer -q -D pulse set Master 5%+ unmute") -- plus 5% to volume and unmute
-        , ((0, 0x1008FF12), spawn "amixer -q -D pulse set Master toggle") -- toggle mute
-        , ((0, 0xff61), spawn "flameshot screen -c") -- make screenshot and copy to clipboard
-        , ((0 .|. shiftMask, 0xff61), spawn "flameshot gui") -- make screenshot by GUI
-        , ((0, 0x1008FF02), spawn "brightnessctl -d \"radeon_bl0\" set 5%+") -- plus 5% to brightness
-        , ((0, 0x1008FF03), spawn "brightnessctl -d \"radeon_bl0\" set 5%-") -- minus 5% from brightness        	
+        ((0, xF86XK_AudioLowerVolume), spawn "amixer -q -D pulse set Master 5%- unmute") -- minus 5% to volume and unmute
+        , ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q -D pulse set Master 5%+ unmute") -- plus 5% to volume and unmute
+        , ((0, xF86XK_AudioMute), spawn "amixer -q -D pulse set Master toggle") -- toggle mute
+        , ((0, xK_Print), spawn "flameshot screen -c") -- make screenshot and copy to clipboard
+        , ((0 .|. shiftMask, xK_Print), spawn "flameshot gui") -- make screenshot by GUI
+        , ((0, xF86XK_MonBrightnessUp), spawn "brightnessctl -d \"radeon_bl0\" set 5%+") -- plus 5% to brightness
+        , ((0, xF86XK_MonBrightnessDown), spawn "brightnessctl -d \"radeon_bl0\" set 5%-") -- minus 5% from brightness        	
     ]
 
 -- | Finally, a copy of the default bindings in simple textual tabular format.
