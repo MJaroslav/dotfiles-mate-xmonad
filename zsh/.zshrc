@@ -115,6 +115,13 @@ zstyle ':completion:*' special-dirs false
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# thefuck configuration
+eval $(thefuck --alias fuck)
+eval $(thefuck --alias suka)
+eval $(thefuck --alias блять)
+eval $(thefuck --alias бля)
+eval $(thefuck --alias сука)
+
 # Local IPs of phone for termux script 
 export TERMUX_IPS="192.168.0.10"
 
