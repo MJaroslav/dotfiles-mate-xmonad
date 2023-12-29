@@ -79,7 +79,7 @@ VSCODE=codium
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git vscode python nmap gradle)
+plugins=(git vscode python nmap gradle command-not-found)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -99,6 +99,12 @@ source $ZSH/oh-my-zsh.sh
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
+
+# compinit
+# Add .files to completion
+_comp_options+=(globdots)
+# But disable .. and .
+zstyle ':completion:*' special-dirs false
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
