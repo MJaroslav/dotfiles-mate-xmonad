@@ -1,5 +1,6 @@
 # neofetch
 # fastfetch
+# nerdfetch
 showmotd
 
 # If you come from bash you might have to change your $PATH.
@@ -101,7 +102,7 @@ source $ZSH/oh-my-zsh.sh
 # export ARCHFLAGS="-arch x86_64"
 
 # compinit
-# Add .files to completion
+# Add .files to completion.
 _comp_options+=(globdots)
 # But disable .. and .
 zstyle ':completion:*' special-dirs false
@@ -114,20 +115,36 @@ zstyle ':completion:*' special-dirs false
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias v="nvim"
+alias s="sudo"
+alias fm="ranger"
+alias cls="clear; showmotd"
+# Shortcuts.
+alias df="cd ~/.dotfiles"
+alias ws="cd ~/workspace"
+alias wsg="cd ~/workspace/git"
+alias sndbx="cd ~/abyss/workspace"
+alias abyss="cd ~/abyss"
+alias home="cd ~; cls"
+# Open configurations.
+alias zshconf="nvim ~/.zshrc"
+alias xmdconf="nvim ~/.xmonad/xmonad.hi"
+
+bindkey -s '^l' "cls\n"
 
 # thefuck configuration
-eval $(thefuck --alias fuck)
-eval $(thefuck --alias suka)
-eval $(thefuck --alias блять)
-eval $(thefuck --alias бля)
-eval $(thefuck --alias сука)
+# SO SLOW
+# eval $(thefuck --alias fuck)
+# eval $(thefuck --alias suka)
+# eval $(thefuck --alias блять)
+# eval $(thefuck --alias бля)
+# eval $(thefuck --alias сука)
 
 # Local IPs of phone for termux script 
 export TERMUX_IPS="192.168.0.10"
 
 # Make all java use UTF-8 encoding
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
-
 # Fix fucking AWT grey screen
 export _JAVA_AWT_WM_NONREPARENTING=1
 
