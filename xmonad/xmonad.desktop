@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=XMonad Session
+Name[ru]=Сеанс XMonad
+Comment=Lightweight tiling window manager
+Comment[ru]=Легковесный тайловый оконный менеджер
+Encoding=UTF-8
+Exec=/usr/share/xsessions/xmonad-start.sh
+Icon=
+Type=XSession

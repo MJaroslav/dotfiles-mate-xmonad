@@ -26,9 +26,10 @@ import XMonad.Layout.Spacing
 import XMonad.Actions.WindowGo
 import XMonad.Prompt.ConfirmPrompt
 
-import Graphics.X11.ExtraTypes.XF86
+import XMonad.Hooks.StatusBar
+import XMonad.Hooks.StatusBar.PP
 
-import XMonad.Hooks.DynamicLog
+import Graphics.X11.ExtraTypes.XF86
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
@@ -37,7 +38,7 @@ import Data.List
 import Data.Char
 
 include :: String -> String -> Bool
-include xs ys = or . map (isPrefixOf ys) . tails $ xs
+include xs ys = (any (isPrefixOf ys) . tails) xs
 
 data Cond a = a :? a
 
@@ -158,25 +159,25 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- , ((modm              , xK_b     ), sendMessage ToggleStruts)
 
     -- Quit xmonad
-    , ((modm .|. shiftMask, xK_q     ), confirmPrompt def "exit" $ io (exitWith ExitSuccess))
+    , ((modm .|. shiftMask, xK_q     ), confirmPrompt def "exit" $ io exitSuccess)
 
     -- Restart xmonad
     , ((modm              , xK_q     ), confirmPrompt def "restart" $ spawn "killall xmobar && xmonad --recompile; xmonad --restart")
 
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
-    , ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | xmessage -file -"))
-	
-	-- Lock screen
-	, ((modm .|. shiftMask, xK_l ), spawn "mate-screensaver-command -l")
+    , ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | gxmessage -file -"))
 
-	-- Open caja
-	, ((modm, xK_f), spawn "caja")
+        -- Lock screen
+        , ((modm .|. shiftMask, xK_l ), spawn "mate-screensaver-command -l")
 
-	-- Open default browser
-	, ((modm, xK_b), runOrRaise "x-www-browser" (stringProperty "WM_WINDOW_ROLE" =? "browser"))
+        -- Open caja
+        , ((modm, xK_f), spawn "caja")
 
-	-- Open discord
-	, ((modm, xK_d), runOrRaise "discord" (resource =? "discord"))
+        -- Open default browser
+        , ((modm, xK_b), runOrRaise "x-www-browser" (stringProperty "WM_WINDOW_ROLE" =? "browser"))
+
+        -- Open discord
+        , ((modm, xK_d), runOrRaise "discord" (resource =? "discord"))
 
     -- Open VK messenger
     , ((modm, xK_v), runOrRaise "vk-messenger" (className =? "VK Messenger"))
@@ -184,8 +185,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Open Telegram
     , ((modm, xK_t), runOrRaise "telegram-desktop" (className =? "TelegramDesktop"))
 
-	-- Open IDEA
-	, ((modm, xK_i), spawn "idea")
+        -- Open IDEA
+        , ((modm, xK_i), spawn "idea")
 
     -- Toggle FullScreen
     , ((modm .|. shiftMask, xK_b), sequence_ [sendMessage ToggleStruts, toggleScreenSpacingEnabled, toggleWindowSpacingEnabled])
@@ -199,15 +200,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [((m .|. modm, k), windows $ f i)
         | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
-    ++
-
-    --
-    -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
-    -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
-    --
-    [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
-        | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
-        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
 
 ------------------------------------------------------------------------
@@ -216,15 +208,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- mod-button1, Set the window to floating mode and move by dragging
-    [ ((modm, button1), (\w -> focus w >> mouseMoveWindow w
-                                       >> windows W.shiftMaster))
+    [ ((modm, button1), \w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster)
 
     -- mod-button2, Raise the window to the top of the stack
-    , ((modm, button2), (\w -> focus w >> windows W.shiftMaster))
+    , ((modm, button2), \w -> focus w >> windows W.shiftMaster)
 
     -- mod-button3, Set the window to floating mode and resize by dragging
-    , ((modm, button3), (\w -> focus w >> mouseResizeWindow w
-                                       >> windows W.shiftMaster))
+    , ((modm, button3), \w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster)
 
     -- you may also bind events to the mouse scroll wheel (button4 and button5)
     ]
@@ -240,7 +230,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = avoidStruts (reflectHoriz $ smartBorders tiled {-||| Mirror tiled-} ||| smartBorders Full)
+myLayout = avoidStruts (reflectHoriz $ smartBorders tiled ||| smartBorders Full)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -274,13 +264,13 @@ myManageHook = composeAll
     , className                         =? "Gimp"                                   --> doFloat
     , resource                          =? "desktop_window"                         --> doIgnore
     , resource                          =? "kdesktop"                               --> doIgnore
-	, title                             =? "Список друзей" >> className =? "Steam"  --> doFloat
+    , title                             =? "Список друзей" >> className =? "Steam"  --> doFloat
     , className                         =? "discord"                                --> doShift "2"
     , className                         =? "VK Messenger"                           --> doShift "2"
     , stringProperty "WM_WINDOW_ROLE"   =? "browser"                                --> doShift "1"
     , className                         =? "TelegramDesktop"                        --> doShift "2"
-	-- , isFullscreen                                                                  --> doFullFloat
-	]
+    -- , isFullscreen                                                                  --> doFullFloat
+    ]
 
 ------------------------------------------------------------------------
 -- Event handling
@@ -302,15 +292,14 @@ myEventHook = handleEventHook def <+> fullscreenEventHook
 --
 -- By default, do nothing.
 myStartupHook = do
-    spawn "~/.dotfiles/xmonad/scripts/trayer.sh &"
-    spawn "~/.dotfiles/xmonad/scripts/restartable.sh &"
+    spawn "~/.xmonad/scripts/trayer.sh &"
+    spawn "~/.xmonad/scripts/restartable.sh &"
     spawnOnce "setxkbmap -model pc105 -layout us,ru -option -option grp:caps_toggle -option compose:ralt"
     spawnOnce "xautolock -time 15 -locker \"mate-screensaver-command -l\" -detectsleep &"
-    -- setWMName "LG3D" -- Used for Java Swing Apps
 
 ---------
 -- xmobar settings
---
+---------
 
 
 myTitleColor     = "#eeeeee"  -- color of window title
@@ -337,10 +326,10 @@ myPP = xmobarPP {
        . wrap myVisibleWSLeft myVisibleWSRight
     , ppUrgent = xmobarColor myUrgentWSColor ""
        . wrap myUrgentWSLeft myUrgentWSRight
-    , ppLayout = \(l) -> (l `include` "Full" ? myFullIcon :? myTallIcon)
+    , ppLayout = \l -> l `include` "Full" ? myFullIcon :? myTallIcon
     , ppOrder = \(ws:l:t:_) -> [ws,l,t]
-    , ppHidden = \(wid) -> []
-    , ppHiddenNoWindows = \(wid) -> []
+    , ppHidden = const []
+    , ppHiddenNoWindows = const []
 }
 
 ------------------------------------------------------------------------
@@ -352,8 +341,8 @@ main :: IO ()
 main = do
     xmproc <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobarrc"
     xmonad $ docks $ ewmh defaults {
-        logHook = dynamicLogWithPP $ myPP {
-            ppOutput = System.IO.hPutStrLn xmproc
+         logHook = dynamicLogWithPP $ myPP {
+             ppOutput = System.IO.hPutStrLn xmproc
         }
     }
 
@@ -406,12 +395,12 @@ help = unlines ["The modifier key is 'super'. Keybindings:",
     "mod-Space        Rotate through the available layout algorithms",
     "mod-Shift-Space  Reset the layouts on the current workSpace to default",
     "mod-n            Resize/refresh viewed windows to the correct size",
-	"mod-f            Launch Caja file manager",
-	"mod-b            Launch or focus default browser",
+        "mod-f            Launch Caja file manager",
+        "mod-b            Launch or focus default browser",
     "mod-v            Launch or focus VK Messenger",
-	"mod-d            Launch or focus Discord",
+        "mod-d            Launch or focus Discord",
     "mod-t            Launch or focus Telegram",
-	"mod-i            Launch IDEA",
+        "mod-i            Launch IDEA",
     "",
     "-- move focus up or down the window stack",
     "mod-Tab        Move focus to the next window",
