@@ -10,8 +10,9 @@ mkdir $HOME/.xmonad/
 ln -sv $HOME/.dotfiles/xmonad/xmonad.hs $HOME/.xmonad/xmonad.hs
 ln -sv $HOME/.dotfiles/xmonad/scripts $HOME/.xmonad/
 ln -sv $HOME/.dotfiles/xmonad/icons $HOME/.xmonad/
-ln -sv $HOME/.dotfiles/xmonad/xmonad-config-cabal $HOME/.xmonad
+ln -sv $HOME/.dotfiles/xmonad/xmonad-config.cabal $HOME/.xmonad
 ln -sv $HOME/.dotfiles/xmonad/build $HOME/.xmonad
+ln -sv $HOME/.dotfiles/xmonad/xmobarrc $HOME/.xmonad
 
 echo "Do you wish add xsession to LightDM (or analogue)?"
 read -p "[Yy/Nn]" yn

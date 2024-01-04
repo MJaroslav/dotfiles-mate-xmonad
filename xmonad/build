@@ -1,16 +1,20 @@
 #! /bin/sh -eu
 
-# TODO: Add check checksum before compile for ssssppppeeeedddd
-
 # Your source directory. Default is the config dir, if it can be found.
 SRC_DIR=
 
 # Executable name, from the executable stanza of your cabal file.
 # The script will try to guess it if not specified.
-EXE_NAME=
+EXE_NAME=xmonad-config
 
 # Cabal path
 CABAL=$HOME/.ghcup/bin/cabal
+
+# Config source
+SOURCE=$HOME/.xmonad/xmonad.hs
+
+# Cache file for sum check
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/xmonad-checksum"
 ##############################################################################
 
 # config
@@ -36,6 +40,20 @@ if [ "$EXE_NAME" = "" ]; then
 fi
 
 # do it to it
+
+PREV_SUM=""
+if [ -f $CACHE ]; then
+    PREV_SUM="$(cat $CACHE)"
+fi
+CURR_SUM="$(md5sum ~/.dotfiles/xmonad/xmonad.hs | cut -d " " -f1)"
+
+if [ "$CURR_SUM" = "$PREV_SUM" ]; then
+    echo "Source file up to date"
+    exit 0
+fi
+
+echo "Writing source file checksum to $CACHE"
+md5sum ~/.dotfiles/xmonad/xmonad.hs | cut -d " " -f1 > $CACHE
 
 d="$(dirname "$output")"
 f="$(basename "$output")"

@@ -119,6 +119,11 @@ alias v="nvim"
 alias s="sudo"
 alias fm="ranger"
 alias cls="clear; showmotd"
+alias git='hub'
+alias xcopy='xclip -selection clipboard -i'
+alias xpaste='xclip -selection clipboard -o'
+alias dmenu="dmenu -nb \\#070C19 -sb \\#233875"
+alias dmenu_run="dmenu_run -nb \\#070C19 -sb \\#233875"
 # Shortcuts.
 alias df="cd ~/.dotfiles"
 alias ws="cd ~/workspace"
@@ -129,6 +134,14 @@ alias home="cd ~; cls"
 # Open configurations.
 alias zshconf="nvim ~/.zshrc"
 alias xmdconf="nvim ~/.xmonad/xmonad.hi"
+# Swap JDKs
+alias jdks="sdk list java | grep -E \"(installed)|(local only)\" | cut -d \"|\" -f6 | sed -E 's/^\s*|\s*$//g'"
+alias jdk8fx='sdk use java 8.0.345.fx-zulu'
+alias jdk8='sdk use java 8.0.345-zulu'
+alias jdk16fx='sdk use java 16.0.2.fx-zulu'
+alias jdk17='sdk use java 17.0.4-zulu'
+alias jdk17fx='sdk use java 17.0.4.fx-zulu'
+alias usejdk='sdk use java "$(jdks | dmenu -b)"'
 
 bindkey -s '^l' "cls\n"
 
@@ -150,6 +163,8 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 
 # JetBrains installed apps runners.
 export PATH="$HOME/.local/share/JetBrains/Toolbox/scripts:$PATH"
+# Add dotfiles bins to PATH
+export PATH="$HOME/.dotfiles/bin:$PATH"
 
 # THIST MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"

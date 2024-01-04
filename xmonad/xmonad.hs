@@ -6,6 +6,7 @@
 --
 -- Normally, you'd only override those defaults you care about.
 --
+{-# OPTIONS_GHC -Wno-deprecations #-} -- Don't give a fuck.
 
 import XMonad
 import Data.Monoid
@@ -162,10 +163,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_q     ), confirmPrompt def "exit" $ io exitSuccess)
 
     -- Restart xmonad
-    , ((modm              , xK_q     ), confirmPrompt def "restart" $ spawn "killall xmobar && xmonad --recompile; xmonad --restart")
+    , ((modm              , xK_q     ), confirmPrompt def "restart" $ spawn "xmonad --recompile && xmonad --restart")
 
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
-    , ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | gxmessage -file -"))
+    , ((modm .|. shiftMask, xK_slash ), spawn "gxmessage -title \"XMonad help\" -center -fn \"JetBrainsMono Nerd Font\" -file ~/.dotfiles/xmonad/help.txt")
 
         -- Lock screen
         , ((modm .|. shiftMask, xK_l ), spawn "mate-screensaver-command -l")
@@ -205,7 +206,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 ------------------------------------------------------------------------
 -- Mouse bindings: default actions bound to mouse events
 --
-myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
+myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList
 
     -- mod-button1, Set the window to floating mode and move by dragging
     [ ((modm, button1), \w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster)
@@ -269,6 +270,7 @@ myManageHook = composeAll
     , className                         =? "VK Messenger"                           --> doShift "2"
     , stringProperty "WM_WINDOW_ROLE"   =? "browser"                                --> doShift "1"
     , className                         =? "TelegramDesktop"                        --> doShift "2"
+    , className                         =? "Gxmessage"                              --> doFloat
     -- , isFullscreen                                                                  --> doFullFloat
     ]
 
@@ -371,7 +373,7 @@ defaults = def {
         layoutHook         = myLayout,
         manageHook         = myManageHook,
         handleEventHook    = myEventHook,
-        logHook            = {--myLogHook $--} dynamicLogWithPP $ myPP,
+        logHook            = {--myLogHook $--} dynamicLogWithPP myPP,
         startupHook        = myStartupHook
     } `additionalKeys` [
         ((0, xF86XK_AudioLowerVolume), spawn "amixer -q -D pulse set Master 5%- unmute") -- minus 5% to volume and unmute
@@ -382,60 +384,3 @@ defaults = def {
         , ((0, xF86XK_MonBrightnessUp), spawn "brightnessctl -d \"radeon_bl0\" set 5%+") -- plus 5% to brightness
         , ((0, xF86XK_MonBrightnessDown), spawn "brightnessctl -d \"radeon_bl0\" set 5%-") -- minus 5% from brightness        	
     ]
-
--- | Finally, a copy of the default bindings in simple textual tabular format.
-help :: String
-help = unlines ["The modifier key is 'super'. Keybindings:",
-    "",
-    "-- launching and killing programs",
-    "mod-Shift-Enter  Launch xterminal",
-    "mod-p            Launch dmenu",
-    "mod-Shift-p      Launch gmrun",
-    "mod-Shift-c      Close/kill the focused window",
-    "mod-Space        Rotate through the available layout algorithms",
-    "mod-Shift-Space  Reset the layouts on the current workSpace to default",
-    "mod-n            Resize/refresh viewed windows to the correct size",
-        "mod-f            Launch Caja file manager",
-        "mod-b            Launch or focus default browser",
-    "mod-v            Launch or focus VK Messenger",
-        "mod-d            Launch or focus Discord",
-    "mod-t            Launch or focus Telegram",
-        "mod-i            Launch IDEA",
-    "",
-    "-- move focus up or down the window stack",
-    "mod-Tab        Move focus to the next window",
-    "mod-Shift-Tab  Move focus to the previous window",
-    "mod-j          Move focus to the next window",
-    "mod-k          Move focus to the previous window",
-    "mod-m          Move focus to the master window",
-    "",
-    "-- modifying the window order",
-    "mod-Return   Swap the focused window and the master window",
-    "mod-Shift-j  Swap the focused window with the next window",
-    "mod-Shift-k  Swap the focused window with the previous window",
-    "",
-    "-- resizing the master/slave ratio",
-    "mod-h  Shrink the master area",
-    "mod-l  Expand the master area",
-    "",
-    "-- floating layer support",
-    "mod-Shift-t  Push window back into tiling; unfloat and re-tile it",
-    "",
-    "-- increase or decrease number of windows in the master area",
-    "mod-comma  (mod-,)   Increment the number of windows in the master area",
-    "mod-period (mod-.)   Deincrement the number of windows in the master area",
-    "",
-    "-- quit, or restart",
-    "mod-Shift-q  Quit xmonad",
-    "mod-q        Restart xmonad",
-    "mod-[1..9]   Switch to workSpace N",
-    "",
-    "-- Workspaces & screens",
-    "mod-Shift-[1..9]   Move client to workspace N",
-    "mod-{w,e,r}        Switch to physical/Xinerama screens 1, 2, or 3",
-    "mod-Shift-{w,e,r}  Move client to screen 1, 2, or 3",
-    "",
-    "-- Mouse bindings: default actions bound to mouse events",
-    "mod-button1  Set the window to floating mode and move by dragging",
-    "mod-button2  Raise the window to the top of the stack",
-    "mod-button3  Set the window to floating mode and resize by dragging"]
