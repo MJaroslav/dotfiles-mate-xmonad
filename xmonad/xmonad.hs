@@ -25,7 +25,10 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.Reflect
 import XMonad.Layout.Spacing
 import XMonad.Actions.WindowGo
+import XMonad.Actions.CopyWindow
 import XMonad.Prompt.ConfirmPrompt
+import XMonad.Hooks.RefocusLast -- (refocusLastLayoutHook, refocusLastWhen, isFloat)
+import XMonad.Layout.TrackFloating
 
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
@@ -231,7 +234,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = avoidStruts (reflectHoriz $ smartBorders tiled ||| smartBorders Full)
+myLayout = refocusLastLayoutHook . trackFloating $ avoidStruts (reflectHoriz $ smartBorders tiled ||| smartBorders Full)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -240,10 +243,10 @@ myLayout = avoidStruts (reflectHoriz $ smartBorders tiled ||| smartBorders Full)
      nmaster = 1
 
      -- Default proportion of screen occupied by master pane
-     ratio   = 2/3
+     ratio   = 2 / 3
 
      -- Percent of screen to increment by when resizing panes
-     delta   = 3/100
+     delta   = 3 / 100
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -271,6 +274,7 @@ myManageHook = composeAll
     , stringProperty "WM_WINDOW_ROLE"   =? "browser"                                --> doShift "1"
     , className                         =? "TelegramDesktop"                        --> doShift "2"
     , className                         =? "Gxmessage"                              --> doFloat
+    , className                         =? "scrcpy"                                 --> doFloat <+> doF copyToAll
     -- , isFullscreen                                                                  --> doFullFloat
     ]
 
@@ -283,7 +287,11 @@ myManageHook = composeAll
 -- return (All True) if the default handler is to be run afterwards. To
 -- combine event hooks use mappend or mconcat from Data.Monoid.
 --
-myEventHook = handleEventHook def <+> fullscreenEventHook
+myEventHook = mconcat
+    [
+        refocusLastWhen (refocusingIsActive <||> isFloat),
+        handleEventHook def <+> fullscreenEventHook
+    ]
 
 ------------------------------------------------------------------------
 -- Startup hook

@@ -1,0 +1,24 @@
+#!/bin/bash
+GROUP1="us"
+GROUP2="ru"
+SPEED=0.1
+
+PREV=$(xset -q | grep LED | awk '{ print $10 }')
+
+while true
+do
+    CURR=$(xset -q | grep LED | awk '{ print $10 }')
+    if [[ $CURR != $PREV ]];
+    then
+        # notify-send "switch to $CURR"
+        PREV=$CURR
+        if [[ $CURR -eq "00000002" ]];
+        then
+            GROUP=$GROUP1
+        else
+            GROUP=$GROUP2
+        fi
+        ssh -p 8022 mjaroslav@localhost setxkbmap -display :1 -layout $GROUP
+    fi
+    sleep $SPEED
+done

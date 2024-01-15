@@ -1,2 +1,2 @@
-#!bin/bash
+#!/bin/bash
 xprop | gxmessage -title "xprop results" -center -fn "JetBrainsMono Nerd Font" -file -

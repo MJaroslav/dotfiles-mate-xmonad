@@ -30,3 +30,6 @@ play-with-mpv &
 killall nekoray
 while pgrep -x nekoray >/dev/null; do sleep 1; done
 nekoray &
+
+killall xkbvncsync
+$HOME/.dotfiles/bin/xkbvncsync $
