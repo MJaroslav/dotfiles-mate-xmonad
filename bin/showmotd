@@ -1,0 +1,17 @@
+#!/bin/bash
+
+width=`stty size | cut -d " " -f 2`
+
+for ((i=$width; i>0; i--))
+do
+	if [[ -f ~/.dotfiles/motd/motd-$i ]]
+	then
+		cat ~/.dotfiles/motd/motd-$i
+		exit 0
+	fi
+done
+
+if [[ -f ~/.dotfiles/motd/motd-default ]]
+then
+	cat ~/.dotfiles/motd/motd-default
+fi

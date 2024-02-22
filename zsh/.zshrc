@@ -124,6 +124,7 @@ alias xcopy='xclip -selection clipboard -i'
 alias xpaste='xclip -selection clipboard -o'
 alias dmenu="dmenu -nb \\#070C19 -sb \\#233875"
 alias dmenu_run="dmenu_run -nb \\#070C19 -sb \\#233875"
+# [ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
 # Shortcuts.
 alias df="cd ~/.dotfiles"
 alias ws="cd ~/workspace"
@@ -153,8 +154,8 @@ bindkey -s '^l' "cls\n"
 # eval $(thefuck --alias бля)
 # eval $(thefuck --alias сука)
 
-# Local IPs of phone for termux script 
-export TERMUX_IPS="192.168.0.10"
+# Phone name for termux-find command 
+export TERMUX_NAME="Redmi-Note-7"
 
 # Make all java use UTF-8 encoding
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"

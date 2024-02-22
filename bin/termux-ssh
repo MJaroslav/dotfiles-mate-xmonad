@@ -1,0 +1,2 @@
+#!/bin/bash
+ssh mjaroslav@`termux-find` -p 8022 $@

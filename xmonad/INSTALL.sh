@@ -13,6 +13,7 @@ ln -sv $HOME/.dotfiles/xmonad/icons $HOME/.xmonad/
 ln -sv $HOME/.dotfiles/xmonad/xmonad-config.cabal $HOME/.xmonad
 ln -sv $HOME/.dotfiles/xmonad/build $HOME/.xmonad
 ln -sv $HOME/.dotfiles/xmonad/xmobarrc $HOME/.xmonad
+ln -sv $HOME/.dotfiles/xmonad/xmobarminirc $HOME/.xmonad
 
 echo "Do you wish add xsession to LightDM (or analogue)?"
 read -p "[Yy/Nn]" yn

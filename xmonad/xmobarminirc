@@ -1,0 +1,29 @@
+Config { font = "xft:JetBrainsMono Nerd Font:size=9"
+       , additionalFonts = []
+       , borderColor = "black"
+       , border = NoBorder
+       , bgColor = "black"
+       , fgColor = "white"
+       , alpha = 200
+       , position = TopW L 90
+       , textOffset = -1
+       , iconOffset = -1
+       , lowerOnStart = True
+       , iconRoot = ".xmonad/icons"
+       , commands = [ Run Cpu ["-t", "<total>", "-L","20","-H","85",
+                               "--low","green","--high","red"] 10
+                    , Run Memory ["-t", "<usedratio>",
+								  "-L", "30", "-H", "85",
+								  "--low", "green", "--high", "red"] 10
+                    , Run Swap ["-t", "<usedratio>",
+								"-L", "10", "-H", "30",
+								"--low", "green", "--high", "red"] 10
+                    , Run Date "%H:%M" "date" 10
+                    , Run Kbd [("ru", "<icon=ru.xpm/>"), ("us", "<icon=us.xpm/>")]
+					, Run Com ".xmonad/scripts/volume-status.sh" [] "volume" 10
+                    , Run StdinReader
+					]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "  %StdinReader% }{ %cpu%|%memory%|%swap% %volume% %kbd% %date% "
+       }

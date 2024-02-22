@@ -26,6 +26,7 @@ import XMonad.Layout.Reflect
 import XMonad.Layout.Spacing
 import XMonad.Actions.WindowGo
 import XMonad.Actions.CopyWindow
+import XMonad.Actions.TagWindows
 import XMonad.Prompt.ConfirmPrompt
 import XMonad.Hooks.RefocusLast -- (refocusLastLayoutHook, refocusLastWhen, isFloat)
 import XMonad.Layout.TrackFloating
@@ -56,7 +57,7 @@ False ? (_ :? y) = y
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
-myTerminal      = "sakura"
+myTerminal      = "kitty"
 
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse :: Bool
@@ -275,6 +276,7 @@ myManageHook = composeAll
     , className                         =? "TelegramDesktop"                        --> doShift "2"
     , className                         =? "Gxmessage"                              --> doFloat
     , className                         =? "scrcpy"                                 --> doFloat <+> doF copyToAll
+    , className                         =? "Key-mon"                                --> doFloat <+> doF copyToAll
     -- , isFullscreen                                                                  --> doFullFloat
     ]
 
@@ -313,7 +315,7 @@ myStartupHook = do
 
 
 myTitleColor     = "#eeeeee"  -- color of window title
-myTitleLength    = 60         -- truncate window title to this length
+myTitleLength    = 136         -- truncate window title to this length
 myCurrentWSColor = "#e6744c"  -- color of active workspace
 myVisibleWSColor = "#c185a7"  -- color of inactive workspace
 myUrgentWSColor  = "#cc0000"  -- color of workspace with 'urgent' window
@@ -349,7 +351,7 @@ myPP = xmobarPP {
 --
 main :: IO ()
 main = do
-    xmproc <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobarrc"
+    xmproc <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobarminirc"
     xmonad $ docks $ ewmh defaults {
          logHook = dynamicLogWithPP $ myPP {
              ppOutput = System.IO.hPutStrLn xmproc

@@ -2,3 +2,4 @@
 adb forward tcp:8022 tcp:8022
 adb forward tcp:5901 tcp:5901
 adb reverse tcp:8122 tcp:22
+adb forward tcp:25565 tcp:25565

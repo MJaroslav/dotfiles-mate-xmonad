@@ -20,6 +20,8 @@ Plug 'andweeb/presence.nvim'
 Plug 'lambdalisue/suda.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'airblade/vim-gitgutter'
+Plug 'udalov/kotlin-vim'
+Plug 'wakatime/vim-wakatime'
 
 call plug#end()
 

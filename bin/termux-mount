@@ -1,0 +1,32 @@
+#!/bin/bash
+
+ip="${1:-`find-ip -n Redmi-Note-7`}"
+usr=$(id -nu)
+grp=$(id -ng)
+
+dir=/media/$usr/termux
+
+if mountpoint -q $dir; then
+    echo "Already mounted"
+    notify-send -i terminal Termux "Already mounted"
+    exit 0
+fi
+
+if [[ ! -d $dir ]]; then 
+    sudo mkdir $dir
+    echo "Directory created"
+fi
+
+if [[ $usr != `stat -c '%U' $dir` || $grp != `stat -c '%G' $dir` ]]; then
+    sudo chown $usr:$grp $dir
+    echo "chown applied"
+fi
+
+if [[ 755 -ne `stat -c '%a' $dir` ]]; then
+    chmod 755 $dir
+    echo "chmod applied"
+fi
+
+sshfs -p 8022 -o follow_symlinks $usr@$ip:/ /media/$usr/termux && notify-send -i terminal Termux Mounted || notify-send -i terminal Termux "Not mounted"
+
+[[ -L $HOME/termux ]] || ln -s /media/$usr/termux/data/data/com.termux/files/ $HOME/termux
