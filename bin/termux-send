@@ -1,0 +1,15 @@
+#!/bin/bash
+termux=$HOME/termux
+downloads=$termux/home/storage/downloads
+save=Termux
+name=`basename $1`
+
+if [[ -d $termux ]]; then
+    [[ -d $downloads/$save ]] || mkdir $downloads/$save
+    cp $1 $downloads/$save/$name
+    echo "File copied as Download/$save/$name"
+    notify-send -i terminal Termux "File copied as Download/$save/$name"
+else
+    echo "Not mounted"
+    notify-send -i termunal Termux "Not mounted"
+fi

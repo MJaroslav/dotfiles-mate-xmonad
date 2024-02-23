@@ -1,0 +1,15 @@
+#!/bin/bash
+dir=$HOME/Pictures/screenshots
+out=$HOME/Pictures/last-screenshot.png
+latest=`ls -rt $dir | tail -n1`
+ln -sf $dir/$latest $out
+
+termux=$HOME/termux
+downloads=$termux/home/storage/downloads
+save=Termux
+
+if [[ -d $termux ]]; then
+    [[ -d $downloads/$save ]] || mkdir $downloads/$save
+    cp $dir/$latest $downloads/$save/$latest
+    notify-send -i terminal Termux "Screenshot also copied to \"Download/$save/$latest\""
+fi

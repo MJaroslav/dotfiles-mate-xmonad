@@ -389,8 +389,8 @@ defaults = def {
         ((0, xF86XK_AudioLowerVolume), spawn "amixer -q -D pulse set Master 5%- unmute") -- minus 5% to volume and unmute
         , ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q -D pulse set Master 5%+ unmute") -- plus 5% to volume and unmute
         , ((0, xF86XK_AudioMute), spawn "amixer -q -D pulse set Master toggle") -- toggle mute
-        , ((0, xK_Print), spawn "flameshot screen -c") -- make screenshot and copy to clipboard
-        , ((0 .|. shiftMask, xK_Print), spawn "flameshot gui") -- make screenshot by GUI
+        , ((0, xK_Print), spawn "flameshot screen -c && update-last-screenshot") -- make screenshot and copy to clipboard
+        , ((0 .|. shiftMask, xK_Print), spawn "flameshot gui && update-last-screenshot") -- make screenshot by GUI
         , ((0, xF86XK_MonBrightnessUp), spawn "brightnessctl -d \"radeon_bl0\" set 5%+") -- plus 5% to brightness
         , ((0, xF86XK_MonBrightnessDown), spawn "brightnessctl -d \"radeon_bl0\" set 5%-") -- minus 5% from brightness        	
     ]
