@@ -1,5 +1,5 @@
-Config { font = "xft:JetBrainsMono Nerd Font:size=9"
-       , additionalFonts = []
+Config { font = "JetBrains Mono 10"
+       , additionalFonts = ["Symbols Nerd 10", "monospace 10"]
        , borderColor = "black"
        , border = NoBorder
        , bgColor = "black"

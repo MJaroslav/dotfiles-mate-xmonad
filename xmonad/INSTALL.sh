@@ -1,10 +1,15 @@
 #!/bin/bash
 echo "Installing dependencies..."
-echo "Do you wish to install next apt packages: xmobar suckless-tools gmrun trayer amixer brightnessctl caja alsa-utils xautolock flameshot nitrogen mate-screensaver"
+echo "Do you wish to install next apt packages: suckless-tools gmrun trayer brightnessctl caja alsa-utils xautolock flameshot nitrogen mate-screensaver libgtk2.0-dev libpango1.0-dev libglib2.0-dev libcairo2-dev"
 read -p "[Yy/Nn]" yn
 if [[ $yn =~ Y|y ]]; then
-    sudo apt install xmobar suckless-tools gmrun trayer amixer brightnessctl caja alsa-utils xautolock flameshot nitrogen mate-screensaver -y
+    sudo apt install suckless-tools gmrun trayer amixer brightnessctl caja alsa-utils xautolock flameshot nitrogen mate-screensaver libgtk2.0-dev libpango1.0-dev libglib2.0-dev libcairo2-dev -y
 fi
+
+echo "Installing xmobar by cabal"
+cd ~
+cabal install xmobar-0.47.2 --flags="all_extensions" --overwrite-policy=always
+cd -
 
 mkdir $HOME/.xmonad/
 ln -sv $HOME/.dotfiles/xmonad/xmonad.hs $HOME/.xmonad/xmonad.hs
@@ -28,5 +33,9 @@ if [[ $yn =~ Y|y ]]; then
     fi
 fi
 
-echo "Recompiling xmonad..."
+echo "Installing and recompiling xmonad..."
+cd ~
+cabal install --lib xmonad
+cabal install --lib xmonad-contrib
+cd -
 xmonad --recompile

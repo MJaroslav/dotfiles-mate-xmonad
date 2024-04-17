@@ -1,5 +1,5 @@
-Config { font = "xft:JetBrainsMono Nerd Font:size=9"
-       , additionalFonts = []
+Config { font = "Symbols Nerd Font 11"
+       , additionalFonts = ["JetBrains Mono 11", "monospace 11"]
        , borderColor = "black"
        , border = NoBorder
        , bgColor = "black"
@@ -7,7 +7,7 @@ Config { font = "xft:JetBrainsMono Nerd Font:size=9"
        , alpha = 200
        , position = TopW L 90
        , textOffset = -1
-       , iconOffset = -1
+       , iconOffset = -2
        , lowerOnStart = True
        , iconRoot = ".xmonad/icons"
        , commands = [ Run Cpu ["-t", "<total>", "-L","20","-H","85",
@@ -22,8 +22,10 @@ Config { font = "xft:JetBrainsMono Nerd Font:size=9"
                     , Run Kbd [("ru", "<icon=ru.xpm/>"), ("us", "<icon=us.xpm/>")]
 					, Run Com ".xmonad/scripts/volume-status.sh" [] "volume" 10
                     , Run StdinReader
+                    , Run Com "echo" ["\xf30e"] "logo" 0
+                    , Run Com "echo" ["\xE0B2 "] "left" 0
 					]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "  %StdinReader% }{ %cpu%|%memory%|%swap% %volume% %kbd% %date% "
+       , template = "%logo% %StdinReader% }{ %cpu%|%memory%|%swap% %volume% %kbd% %date% "
        }

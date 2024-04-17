@@ -13,6 +13,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# ZSH_THEME="agnoster"
 ZSH_THEME="murilasso"
 
 # Set list of themes to pick from when loading at random
@@ -80,7 +81,15 @@ VSCODE=codium
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git vscode python nmap gradle command-not-found)
+plugins=(
+    git
+    vscode
+    python
+    nmap
+    gradle
+    # command-not-found
+    thefuck
+)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -106,6 +115,8 @@ source $ZSH/oh-my-zsh.sh
 _comp_options+=(globdots)
 # But disable .. and .
 zstyle ':completion:*' special-dirs false
+# And enable rehash for new installed executables
+zstyle ':completion:*' rehash
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -148,11 +159,26 @@ bindkey -s '^l' "cls\n"
 
 # thefuck configuration
 # SO SLOW
-# eval $(thefuck --alias fuck)
+# eval $(thefuck --alias)
 # eval $(thefuck --alias suka)
 # eval $(thefuck --alias блять)
 # eval $(thefuck --alias бля)
 # eval $(thefuck --alias сука)
+
+# Some functions and hooks
+#
+# Redraw with actual motd on window resize
+TRAPWINCH () {
+    cls
+    printf '\n'
+    zle reset-prompt
+}
+# Exit by ctrl+D with any line content
+exit_zsh() { exit }
+zle -N exit_zsh
+bindkey '^D' exit_zsh
+# TheFuck on ctrl+F
+# bindkey -s '^f' "fuck\n"
 
 # Phone name for termux-find command 
 export TERMUX_NAME="Redmi-Note-7"

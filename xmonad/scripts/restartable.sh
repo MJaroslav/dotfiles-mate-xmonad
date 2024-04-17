@@ -17,7 +17,7 @@ compton -f &
 
 killall xautolock
 while pgrep -x xautolock >/dev/null; do sleep 1; done
-xautolock -time 15 -locker "mate-screensaver-command -l" -delectsleep &
+xautolock -time 15 -locker "mate-screensaver-command -l" -detectsleep &
 
 killall mate-screensaver
 while pgrep -x mate-screensaver >/dev/null; do sleep 1; done

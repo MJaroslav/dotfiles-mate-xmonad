@@ -30,6 +30,7 @@ import XMonad.Actions.TagWindows
 import XMonad.Prompt.ConfirmPrompt
 import XMonad.Hooks.RefocusLast -- (refocusLastLayoutHook, refocusLastWhen, isFloat)
 import XMonad.Layout.TrackFloating
+import XMonad.Layout.Spiral
 
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
@@ -184,6 +185,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- Open discord
         , ((modm, xK_d), runOrRaise "discord" (resource =? "discord"))
 
+        -- Open vanilla discord
+        , ((modm .|. shiftMask, xK_d), raiseMaybe (spawn "discord --vanilla") (resource =? "discord"))
+
     -- Open VK messenger
     , ((modm, xK_v), runOrRaise "vk-messenger" (className =? "VK Messenger"))
 
@@ -235,7 +239,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = refocusLastLayoutHook . trackFloating $ avoidStruts (reflectHoriz $ smartBorders tiled ||| smartBorders Full)
+myLayout = refocusLastLayoutHook . trackFloating $ avoidStruts (reflectHoriz $ smartBorders tiled ||| smartBorders Full ||| spiral (4/3))
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -244,10 +248,10 @@ myLayout = refocusLastLayoutHook . trackFloating $ avoidStruts (reflectHoriz $ s
      nmaster = 1
 
      -- Default proportion of screen occupied by master pane
-     ratio   = 2 / 3
+     ratio   = 1 / 2
 
      -- Percent of screen to increment by when resizing panes
-     delta   = 3 / 100
+     delta   = 2 / 100
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -307,7 +311,7 @@ myStartupHook = do
     spawn "~/.xmonad/scripts/trayer.sh &"
     spawn "~/.xmonad/scripts/restartable.sh &"
     spawnOnce "setxkbmap -model pc105 -layout us,ru -option -option grp:caps_toggle -option compose:ralt"
-    spawnOnce "xautolock -time 15 -locker \"mate-screensaver-command -l\" -detectsleep &"
+    -- spawnOnce "xautolock -time 15 -locker \"mate-screensaver-command -l\" -detectsleep &"
 
 ---------
 -- xmobar settings
@@ -315,7 +319,7 @@ myStartupHook = do
 
 
 myTitleColor     = "#eeeeee"  -- color of window title
-myTitleLength    = 136         -- truncate window title to this length
+myTitleLength    = 120        -- truncate window title to this length
 myCurrentWSColor = "#e6744c"  -- color of active workspace
 myVisibleWSColor = "#c185a7"  -- color of inactive workspace
 myUrgentWSColor  = "#cc0000"  -- color of workspace with 'urgent' window
@@ -327,6 +331,7 @@ myUrgentWSLeft  = "{"         -- wrap urgent workspace with these
 myUrgentWSRight = "}"
 myFullIcon = "\60340"
 myTallIcon = "\60341"
+mySpiralIcon = "\988023"
 
 -- Custom PP, configure it as you like. It determines what is being written to the bar.
 myPP = xmobarPP {
@@ -338,7 +343,7 @@ myPP = xmobarPP {
        . wrap myVisibleWSLeft myVisibleWSRight
     , ppUrgent = xmobarColor myUrgentWSColor ""
        . wrap myUrgentWSLeft myUrgentWSRight
-    , ppLayout = \l -> l `include` "Full" ? myFullIcon :? myTallIcon
+    , ppLayout = \l -> l `include` "Full" ? myFullIcon :? (l `include` "Spiral" ? mySpiralIcon :? myTallIcon)
     , ppOrder = \(ws:l:t:_) -> [ws,l,t]
     , ppHidden = const []
     , ppHiddenNoWindows = const []
