@@ -22,8 +22,11 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'udalov/kotlin-vim'
 Plug 'wakatime/vim-wakatime'
+Plug 'dylanaraps/wal.vim'
 
 call plug#end()
+
+colorscheme wal
 
 :set completeopt-=preview
 :let g:suda_smart_edit = 1

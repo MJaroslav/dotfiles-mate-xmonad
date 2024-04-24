@@ -188,6 +188,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         -- Open vanilla discord
         , ((modm .|. shiftMask, xK_d), raiseMaybe (spawn "discord --vanilla") (resource =? "discord"))
 
+        , ((modm, xK_period), spawn "emoji-picker")
+
     -- Open VK messenger
     , ((modm, xK_v), runOrRaise "vk-messenger" (className =? "VK Messenger"))
 
@@ -198,7 +200,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , ((modm, xK_i), spawn "idea")
 
     -- Toggle FullScreen
-    , ((modm .|. shiftMask, xK_b), sequence_ [sendMessage ToggleStruts, toggleScreenSpacingEnabled, toggleWindowSpacingEnabled])
+    , ((modm .|. shiftMask, xK_b), sequence_ [spawn "polybar-msg cmd toggle", toggleScreenSpacingEnabled, toggleWindowSpacingEnabled])
     ]
     ++
 
@@ -308,7 +310,7 @@ myEventHook = mconcat
 --
 -- By default, do nothing.
 myStartupHook = do
-    spawn "~/.xmonad/scripts/trayer.sh &"
+    -- spawn "~/.xmonad/scripts/trayer.sh &"
     spawn "~/.xmonad/scripts/restartable.sh &"
     spawnOnce "setxkbmap -model pc105 -layout us,ru -option -option grp:caps_toggle -option compose:ralt"
     -- spawnOnce "xautolock -time 15 -locker \"mate-screensaver-command -l\" -detectsleep &"
@@ -356,12 +358,13 @@ myPP = xmobarPP {
 --
 main :: IO ()
 main = do
-    xmproc <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobarminirc"
-    xmonad $ docks $ ewmh defaults {
-         logHook = dynamicLogWithPP $ myPP {
-             ppOutput = System.IO.hPutStrLn xmproc
-        }
-    }
+    -- xmproc <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobarminirc"
+    spawnPipe "~/.xmonad/scripts/polybar.sh"
+    xmonad $ docks . ewmhFullscreen . ewmh $ defaults -- {
+    --      logHook = dynamicLogWithPP $ myPP {
+    --          ppOutput = System.IO.hPutStrLn xmproc
+    --     }
+    -- }
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will
@@ -385,10 +388,10 @@ defaults = def {
         mouseBindings      = myMouseBindings,
 
       -- hooks, layouts
-        layoutHook         = myLayout,
+        layoutHook         = smartSpacingWithEdge 2 $ myLayout,
         manageHook         = myManageHook,
         handleEventHook    = myEventHook,
-        logHook            = {--myLogHook $--} dynamicLogWithPP myPP,
+        -- logHook            = {--myLogHook $--} dynamicLogWithPP myPP,
         startupHook        = myStartupHook
     } `additionalKeys` [
         ((0, xF86XK_AudioLowerVolume), spawn "amixer -q -D pulse set Master 5%- unmute") -- minus 5% to volume and unmute

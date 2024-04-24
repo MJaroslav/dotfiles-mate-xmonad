@@ -168,11 +168,11 @@ bindkey -s '^l' "cls\n"
 # Some functions and hooks
 #
 # Redraw with actual motd on window resize
-TRAPWINCH () {
-    cls
-    printf '\n'
-    zle reset-prompt
-}
+# TRAPWINCH () {
+#    cls
+#    printf '\n'
+#    zle reset-prompt
+#}
 # Exit by ctrl+D with any line content
 exit_zsh() { exit }
 zle -N exit_zsh
@@ -199,3 +199,13 @@ export SDKMAN_DIR="$HOME/.sdkman"
 
 [ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env" # ghcup-env
 [ -f "$HOME/.cabal/bin/" ] && export PATH=$HOME/.cabal/bin/:$PATH # cabal-env
+
+# wal integration
+cat ~/.cache/wal/sequences
+# wal TTY
+source ~/.cache/wal/colors-tty.sh
+
+# Funcs
+show_color() {
+    perl -e 'foreach $a(@ARGV){print "\e[48:2::".join(":",unpack("C*",pack("H*",$a)))."m \e[49m "};print "\n"' "$@"
+}

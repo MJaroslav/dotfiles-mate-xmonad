@@ -1,35 +1,31 @@
 #!/bin/bash
-killall polkit-mate-aut
-while pgrep -x polkit-mate-aut >/dev/null; do sleep 1; done
+kill_and_wait() {
+    killall -q $1
+    while pgrep -x $1 >/dev/null; do sleep 1; done
+}
+
+wal -R -o $HOME/.dotfiles/wal/sync.sh -e
+
+kill_and_wait polkit-mate-aut
 mate-polkit &
 
-# killall nitrogen
-# while pgrep -x polybar >/dev/null; do sleep 1; done
-nitrogen --restore &
-
-killall flameshot
-while pgrep -x flameshot >/dev/null; do sleep 1; done
+kill_and_wait flameshot
 flameshot &
 
-killall compton
-while pgrep -x compton >/dev/null; do sleep 1; done
+kill_and_wait compton
 compton -f &
 
-killall xautolock
-while pgrep -x xautolock >/dev/null; do sleep 1; done
+kill_and_wait xautolock
 xautolock -time 15 -locker "mate-screensaver-command -l" -detectsleep &
 
-killall mate-screensaver
-while pgrep -x mate-screensaver >/dev/null; do sleep 1; done
+kill_and_wait mate-screensaver
 mate-screensaver &
 
-killall play-with-mpv
-while pgrep -x play-with-mpv >/dev/null; do sleep 1; done
+kill_and_wait play-with-mpv
 play-with-mpv &
 
-killall nekoray
-while pgrep -x nekoray >/dev/null; do sleep 1; done
+kill_and_wait nekoray
 nekoray &
 
-killall xkbvncsync
-$HOME/.dotfiles/bin/xkbvncsync $
+# killall xkbvncsync
+# $HOME/.dotfiles/bin/xkbvncsync $
