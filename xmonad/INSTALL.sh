@@ -1,9 +1,9 @@
 #!/bin/bash
 echo "Installing dependencies..."
-echo "Do you wish to install next apt packages: suckless-tools gmrun trayer brightnessctl caja alsa-utils xautolock flameshot nitrogen mate-screensaver libgtk2.0-dev libpango1.0-dev libglib2.0-dev libcairo2-dev"
+echo "Do you wish to install next apt packages: polybar suckless-tools rofi trayer brightnessctl caja alsa-utils xautolock flameshot nitrogen mate-screensaver libgtk2.0-dev libpango1.0-dev libglib2.0-dev libcairo2-dev"
 read -p "[Yy/Nn]" yn
 if [[ $yn =~ Y|y ]]; then
-    sudo apt install suckless-tools gmrun trayer amixer brightnessctl caja alsa-utils xautolock flameshot nitrogen mate-screensaver libgtk2.0-dev libpango1.0-dev libglib2.0-dev libcairo2-dev -y
+    sudo apt install polybar suckless-tools rofi trayer amixer brightnessctl caja alsa-utils xautolock flameshot nitrogen mate-screensaver libgtk2.0-dev libpango1.0-dev libglib2.0-dev libcairo2-dev -y
 fi
 
 echo "Installing xmobar by cabal"
@@ -13,12 +13,10 @@ cd -
 
 mkdir $HOME/.xmonad/
 ln -sv $HOME/.dotfiles/xmonad/xmonad.hs $HOME/.xmonad/xmonad.hs
+ln -sv $HOME/.cache/wal/colors.hs $HOME/.xmonad/Colors.hs
 ln -sv $HOME/.dotfiles/xmonad/scripts $HOME/.xmonad/
-ln -sv $HOME/.dotfiles/xmonad/icons $HOME/.xmonad/
 ln -sv $HOME/.dotfiles/xmonad/xmonad-config.cabal $HOME/.xmonad
 ln -sv $HOME/.dotfiles/xmonad/build $HOME/.xmonad
-ln -sv $HOME/.dotfiles/xmonad/xmobarrc $HOME/.xmonad
-ln -sv $HOME/.dotfiles/xmonad/xmobarminirc $HOME/.xmonad
 
 echo "Do you wish add xsession to LightDM (or analogue)?"
 read -p "[Yy/Nn]" yn

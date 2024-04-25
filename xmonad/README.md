@@ -9,7 +9,7 @@ I used [XMonad](https://xmonad.org/) as window manager over [MATE](https://mate-
 TODO: List all it
 
 ```bash
-sudo apt install xmobar suckless-tools gmrun trayer amixer brightnessctl caja alsa-utils xautolock flameshot nitrogen mate-screensaver -y
+sudo apt install polybar suckless-tools rofi trayer amixer brightnessctl caja alsa-utils xautolock flameshot nitrogen mate-screensaver -y
 ```
 
 Don't install XMonad from `apt`, I use `Hackage` packages by `cabal` with custom build script.
@@ -26,7 +26,6 @@ Link this .dotfiles to xmonad config directory:
 mkdir $HOME/.xmonad/
 ln -sv $HOME/.dotfiles/xmonad/xmonad.hs $HOME/.xmonad/xmonad.hs
 ln -sv $HOME/.dotfiles/xmonad/scripts $HOME/.xmonad/
-ln -sv $HOME/.dotfiles/xmonad/icons $HOME/.xmonad/
 ln -sv $HOME/.dotfiles/xmonad/xmonad-config-cabal $HOME/.xmonad
 ```
 

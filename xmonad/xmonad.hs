@@ -43,6 +43,8 @@ import qualified Data.Map        as M
 import Data.List
 import Data.Char
 
+import Colors
+
 include :: String -> String -> Bool
 include xs ys = (any (isPrefixOf ys) . tails) xs
 
@@ -70,7 +72,7 @@ myClickJustFocuses = False
 
 -- Width of the window border in pixels.
 --
-myBorderWidth   = 1
+myBorderWidth   = 3
 
 -- modMask lets you specify which modkey you want to use. The default
 -- is mod1Mask ("left alt").  You may also consider using mod3Mask
@@ -93,8 +95,8 @@ myWorkspaces    = map show [1..9]
 
 -- Border colors for unfocused and focused windows, respectively.
 --
-myNormalBorderColor  = "#000000"
-myFocusedBorderColor = "#e6744c"
+myNormalBorderColor  = color2
+myFocusedBorderColor = color1
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -105,10 +107,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- launch dmenu
-    , ((modm,               xK_p     ), spawnHere "dmenu_run -nb \\#070C19 -sb \\#233875")
-
-    -- launch gmrun
-    , ((modm .|. shiftMask, xK_p     ), spawnHere "gmrun")
+    , ((modm,               xK_p     ), spawnHere "rofi -show combi -modes combi -combi-modes \"drun,run\"")
 
     -- close focused window
     , ((modm .|. shiftMask, xK_c     ), kill)
@@ -228,6 +227,14 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList
     , ((modm, button3), \w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster)
 
     -- you may also bind events to the mouse scroll wheel (button4 and button5)
+
+    -- swap focus by mod + scroll
+    , ((modm, button4), \w -> windows W.focusDown)
+    , ((modm, button5), \w -> windows W.focusUp)
+
+    -- resize master by mod + scroll
+    , ((modm .|. shiftMask, button4), \w -> sendMessage Expand)
+    , ((modm .|. shiftMask, button5), \w -> sendMessage Shrink)
     ]
 
 ------------------------------------------------------------------------
@@ -250,7 +257,7 @@ myLayout = refocusLastLayoutHook . trackFloating $ avoidStruts (reflectHoriz $ s
      nmaster = 1
 
      -- Default proportion of screen occupied by master pane
-     ratio   = 1 / 2
+     ratio   = 2 / 3
 
      -- Percent of screen to increment by when resizing panes
      delta   = 2 / 100
@@ -310,46 +317,9 @@ myEventHook = mconcat
 --
 -- By default, do nothing.
 myStartupHook = do
-    -- spawn "~/.xmonad/scripts/trayer.sh &"
     spawn "~/.xmonad/scripts/restartable.sh &"
     spawnOnce "setxkbmap -model pc105 -layout us,ru -option -option grp:caps_toggle -option compose:ralt"
     -- spawnOnce "xautolock -time 15 -locker \"mate-screensaver-command -l\" -detectsleep &"
-
----------
--- xmobar settings
----------
-
-
-myTitleColor     = "#eeeeee"  -- color of window title
-myTitleLength    = 120        -- truncate window title to this length
-myCurrentWSColor = "#e6744c"  -- color of active workspace
-myVisibleWSColor = "#c185a7"  -- color of inactive workspace
-myUrgentWSColor  = "#cc0000"  -- color of workspace with 'urgent' window
-myCurrentWSLeft  = "["        -- wrap active workspace with these
-myCurrentWSRight = "]"
-myVisibleWSLeft  = "("        -- wrap inactive workspace with these
-myVisibleWSRight = ")"
-myUrgentWSLeft  = "{"         -- wrap urgent workspace with these
-myUrgentWSRight = "}"
-myFullIcon = "\60340"
-myTallIcon = "\60341"
-mySpiralIcon = "\988023"
-
--- Custom PP, configure it as you like. It determines what is being written to the bar.
-myPP = xmobarPP {
-    -- ppCurrent = xmobarColor "#429942" "" . wrap "<" ">"
-    ppTitle = xmobarColor myTitleColor "" . shorten myTitleLength
-    , ppCurrent = xmobarColor myCurrentWSColor ""
-       . wrap myCurrentWSLeft myCurrentWSRight
-    , ppVisible = xmobarColor myVisibleWSColor ""
-       . wrap myVisibleWSLeft myVisibleWSRight
-    , ppUrgent = xmobarColor myUrgentWSColor ""
-       . wrap myUrgentWSLeft myUrgentWSRight
-    , ppLayout = \l -> l `include` "Full" ? myFullIcon :? (l `include` "Spiral" ? mySpiralIcon :? myTallIcon)
-    , ppOrder = \(ws:l:t:_) -> [ws,l,t]
-    , ppHidden = const []
-    , ppHiddenNoWindows = const []
-}
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
@@ -358,13 +328,8 @@ myPP = xmobarPP {
 --
 main :: IO ()
 main = do
-    -- xmproc <- spawnPipe "xmobar -x 0 ~/.xmonad/xmobarminirc"
-    spawnPipe "~/.xmonad/scripts/polybar.sh"
-    xmonad $ docks . ewmhFullscreen . ewmh $ defaults -- {
-    --      logHook = dynamicLogWithPP $ myPP {
-    --          ppOutput = System.IO.hPutStrLn xmproc
-    --     }
-    -- }
+    spawnPipe "~/.dotfiles/polybar/polybar.sh"
+    xmonad $ docks . ewmhFullscreen . ewmh $ defaults
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will
@@ -391,7 +356,6 @@ defaults = def {
         layoutHook         = smartSpacingWithEdge 2 $ myLayout,
         manageHook         = myManageHook,
         handleEventHook    = myEventHook,
-        -- logHook            = {--myLogHook $--} dynamicLogWithPP myPP,
         startupHook        = myStartupHook
     } `additionalKeys` [
         ((0, xF86XK_AudioLowerVolume), spawn "amixer -q -D pulse set Master 5%- unmute") -- minus 5% to volume and unmute
